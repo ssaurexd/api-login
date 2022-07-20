@@ -1,6 +1,6 @@
 ## Comandos iniciales
 ```
-git clone git clone https://github.com/ssaurexd/api-login.git
+git clone https://github.com/ssaurexd/api-login.git
 cd api-login/
 npm install
 ```
