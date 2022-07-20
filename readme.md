@@ -11,3 +11,7 @@ PORT =
 MONGO_URL =
 BASE_PATH = 
 ```
+
+## Server scripts
+- Iniciar servidor: `npm run dev`
+- Eslint:  `npm run lint`
