@@ -19,7 +19,7 @@ class Server {
 
 	private middlewares = () => {
 
-		/* directorio publico */
+		/* cors */
 		this.initCors()
 		/* habilitar el body */
 		this.app.use( express.urlencoded({ extended: true }) )
