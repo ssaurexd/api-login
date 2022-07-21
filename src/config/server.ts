@@ -3,6 +3,7 @@ import cors from 'cors'
 /*  */
 import RoutesApp from '../routes'
 import Database from './db'
+import { sessionMiddleware, passport } from '../middlewares'
 
 
 class Server {
@@ -24,36 +25,31 @@ class Server {
 		/* habilitar el body */
 		this.app.use( express.urlencoded({ extended: true }) )
 		this.app.use( express.json() )
-		
+		this.app.use( sessionMiddleware )
+		this.app.use( passport.initialize() )
+		this.app.use( passport.session() )
+
 		this.initRoutes()
 		this.initServer()
 	}
-
 	
 	private initCors = () => {
 
 		let whiteList: string[] = []
-		const prodMode = process.env.PROD
-
-		if( prodMode ) {
+		
+		if( process.env.NODE_ENV === 'production' ) {
 
 			whiteList = [
 				''	
 			]
-		} else {
-
-			whiteList = ['http://localhost:3000']
-		}
-
+		} else whiteList = ['http://localhost:3000', 'http://localhost:4000']
 
 		this.app.use( cors({
 			origin: ( origin, cb ) => {
 
-				if( origin && whiteList.indexOf( origin ) !== -1 || !origin ) cb( null, true )
+				if( origin && whiteList.some( domain => domain === origin ) || !origin ) cb( null, true )
 				else cb( new Error('Not allowed by cors') )
-			},
-			optionsSuccessStatus: 200,
-			credentials: true,
+			}
 		}))
 	}
 
