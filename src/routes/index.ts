@@ -1,6 +1,7 @@
 import { Router } from 'express'
 /*  */
 import { router as userRouter } from './user.routes'
+import { router as authRouter } from './auth.routes'
 
 class RoutesApp {
 	
@@ -8,6 +9,7 @@ class RoutesApp {
 
 	setRouter = () => {
 		this.router.use( '/user', userRouter )
+		this.router.use( '/auth', authRouter )
 	}
 
 	getRouter = () => {

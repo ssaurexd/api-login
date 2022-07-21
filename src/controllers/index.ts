@@ -1,1 +1,1 @@
-export {}
+export * as authController from './auth.controllers'
