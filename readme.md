@@ -10,6 +10,8 @@ npm install
 PORT = 
 MONGO_URL =
 BASE_PATH = 
+JWT_SEED =
+SESSION_SECRET =
 ```
 
 ## Server scripts
