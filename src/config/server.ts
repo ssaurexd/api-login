@@ -49,7 +49,8 @@ class Server {
 
 				if( origin && whiteList.some( domain => domain === origin ) || !origin ) cb( null, true )
 				else cb( new Error('Not allowed by cors') )
-			}
+			},
+			credentials: true
 		}))
 	}
 

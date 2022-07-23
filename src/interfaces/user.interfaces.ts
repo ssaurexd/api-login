@@ -7,8 +7,10 @@ export interface IUser {
 	password: string;
 	name: string;
 	createdAt?: string;
-	updatedAt?: string
+	updatedAt?: string;
+	role: UserRoles
 }
+export type UserRoles = 'user' |  'admin'
 export interface IUserMethods {
 	comparePassword: ( password: string ) => Promise<boolean>;
 }

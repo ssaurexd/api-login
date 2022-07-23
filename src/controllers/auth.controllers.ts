@@ -1,5 +1,6 @@
 import { RequestHandler } from 'express'
 import passport from 'passport'
+import connectMongo from 'connect-mongo'
 /*  */
 import { User } from '../models'
 import { IUser } from '../interfaces'
@@ -56,7 +57,7 @@ export const login: RequestHandler = async ( req, res, next ) => {
 	})( req, res, next )
 }
 
-export const logout: RequestHandler = ( req, res, next ) => {
+export const logout: RequestHandler = async ( req, res, next ) => {
 	
 	req.session.destroy(( err ) => {
 		
