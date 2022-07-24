@@ -17,6 +17,16 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>({
 	password: {
 		type: String,
 		required: true
+	},
+	role: {
+		type: String,
+		enum: [ 'user', 'admin' ],
+		default: 'user'
+	},
+	isOnline: {
+		type: Boolean,
+		required: true,
+		default: false
 	}
 }, {
 	timestamps: true
@@ -37,6 +47,12 @@ userSchema.set( 'toJSON', {
 		delete ret['password']
         return ret
 	},
+})
+/* Acatualizar el campo updatedAt cuando se haga update */
+userSchema.pre( 'updateOne', async function( next ) {
+
+	this.updatedAt = new Date()
+	next()
 })
 /* Verificar si la contraseña es correcta */
 userSchema.method( 'comparePassword', async function( password: string ) {

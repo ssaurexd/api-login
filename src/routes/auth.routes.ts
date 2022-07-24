@@ -13,7 +13,7 @@ router.post( '/signup',
 			.notEmpty({ ignore_whitespace: true }).withMessage('El email es requerido')
 			.isEmail().withMessage('Email no valido'),
 		body('password')
-			.notEmpty({ ignore_whitespace: true }).withMessage('El email es requerido'),
+			.notEmpty({ ignore_whitespace: true }).withMessage('El password es requerido'),
 		body('name')
 			.notEmpty({ ignore_whitespace: true }).withMessage('El name es requerido'),
 	]),
@@ -26,7 +26,7 @@ router.post( '/login',
 			.notEmpty({ ignore_whitespace: true }).withMessage('El email es requerido')
 			.isEmail().withMessage('Email no valido'),
 		body('password')
-			.notEmpty({ ignore_whitespace: true }).withMessage('El email es requerido'),
+			.notEmpty({ ignore_whitespace: true }).withMessage('El password es requerido'),
 	]),
 	authController.login
 )

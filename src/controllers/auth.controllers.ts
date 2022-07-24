@@ -20,14 +20,9 @@ export const signup: RequestHandler = async ( req, res ) => {
 		})
 	
 		user = await User.create({ name, email, password })
-	
-		req.login( user, ( err ) => {
-			
-			if( err ) throw err
-			
-			res.status( 200 ).json({
-				user
-			})
+		
+		res.status( 200 ).json({
+			user
 		})
 	} catch ( error ) {
 		

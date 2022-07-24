@@ -1,4 +1,4 @@
-import { Document, Model } from 'mongoose'
+import { Document, Model, Types } from 'mongoose'
 
 
 export interface IUser {
@@ -6,9 +6,10 @@ export interface IUser {
 	email: string;
 	password: string;
 	name: string;
-	createdAt?: string;
-	updatedAt?: string;
-	role: UserRoles
+	createdAt?: Date;
+	updatedAt?: Date;
+	role: UserRoles,
+	isOnline: boolean;
 }
 export type UserRoles = 'user' |  'admin'
 export interface IUserMethods {

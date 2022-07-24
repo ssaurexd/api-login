@@ -1,14 +1,19 @@
 import express, { Express } from 'express'
+import { createServer } from 'http'
 import cors from 'cors'
+import { Server as IOServer } from 'socket.io'
 /*  */
 import RoutesApp from '../routes'
 import Database from './db'
 import { sessionMiddleware, passport } from '../middlewares'
+import Sockets from './sockets'
 
 
 class Server {
 
-	private app: Express = express()
+	public app: Express = express()
+	private server = createServer( this.app )
+	private io: IOServer = new IOServer( this.server, { cors: { origin: '*' } } )
 	private db = new Database()
 	private routesApp = new RoutesApp()
 
@@ -16,6 +21,7 @@ class Server {
 
 		await this.db.start()
 		this.middlewares()
+		this.initSockets()
 	}
 
 	private middlewares = () => {
@@ -35,21 +41,8 @@ class Server {
 	
 	private initCors = () => {
 
-		let whiteList: string[] = []
-		
-		if( process.env.NODE_ENV === 'production' ) {
-
-			whiteList = [
-				''	
-			]
-		} else whiteList = ['http://localhost:3000', 'http://localhost:4000']
-
 		this.app.use( cors({
-			origin: ( origin, cb ) => {
-
-				if( origin && whiteList.some( domain => domain === origin ) || !origin ) cb( null, true )
-				else cb( new Error('Not allowed by cors') )
-			},
+			origin: '*',
 			credentials: true
 		}))
 	}
@@ -58,13 +51,18 @@ class Server {
 
 		this.app.use( '/api', this.routesApp.getRouter() )
 	}
+
+	private initSockets = () => {
+
+		new Sockets( this.io )
+	}
 	
 	private initServer = () => {
 		
 		const PORT = process.env.PORT || 3000
 		const basePath = process.env.BASE_PATH || ''
 
-		this.app.listen( PORT, () => {
+		this.server.listen( PORT, () => {
 
 			console.log(`Server ON --> ${ basePath }:${ PORT}`)
 		})
