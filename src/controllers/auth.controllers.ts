@@ -1,6 +1,5 @@
 import { RequestHandler } from 'express'
-import passport from 'passport'
-import connectMongo from 'connect-mongo'
+import jwt from 'jsonwebtoken'
 /*  */
 import { User } from '../models'
 import { IUser } from '../interfaces'
@@ -33,30 +32,32 @@ export const signup: RequestHandler = async ( req, res ) => {
 	}
 }	
 
-export const login: RequestHandler = async ( req, res, next ) => {
+export const login: RequestHandler = async ( req, res ) => {
 
-	passport.authenticate( 'local', ( err, user, info ) => {
+	const { email = '', password = '' } = req.body
 
-		if( !user ) return res.status( 401 ).json({
-			msg: 'Email y/o Contraseña incorrectos.'
+	try {
+
+		const user = await User.findOne({ email }) 
+
+		if( !user ) return res.status( 400 ).json({
+			msg: 'Email y/o Contraseñas incorrectos.'
 		})
 
-		req.login( user, ( err ) => {
-	
-			if( err ) throw err
-	
-			res.status( 200 ).json({
-				user
-			})
-		})
-	})( req, res, next )
-}
-
-export const logout: RequestHandler = async ( req, res, next ) => {
-	
-	req.session.destroy(( err ) => {
+		const isPasswordEqual = await user.comparePassword( password )
 		
-		res.clearCookie('connect.sid')
-		res.status( 204 ).end()
-	})
+		if( !isPasswordEqual ) return res.status( 400 ).json({
+			msg: 'Email y/o Contraseñas incorrectos.'
+		})
+
+		const token = jwt.sign({ uid: user._id }, process.env.JWT_SEED!, { expiresIn: '30d' } )
+
+		return res.status( 200 ).json({ token, user })
+	} catch ( error ) {
+		
+        console.log("🚀 ~ file: auth.controllers.ts ~ line 41 ~ constlogin:RequestHandler= ~ error", error)
+		return res.status( 500 ).json({
+			msg: 'Oops! Algo salio mal!'
+		})
+	}
 }

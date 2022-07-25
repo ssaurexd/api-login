@@ -1,42 +1,34 @@
 import { RequestHandler } from 'express'
-import session from 'express-session'
-import MongoStore from 'connect-mongo'
+import jwt from 'jsonwebtoken'
 /*  */
 import { IUser } from '../interfaces'
 
 
-export const sessionMiddleware: RequestHandler = ( req, res, next ) => {
+export const isAuthenticated: RequestHandler = async ( req, res, next ) => {
 
-	return session({
-		secret: process.env.SESSION_SECRET!,
-		resave: false,
-		saveUninitialized: false,
-		store: MongoStore.create({
-			mongoUrl: process.env.MONGO_URL,
-			ttl: 2592000 // 30 dias
-		})
-	})( req, res, next )
-}
+	const bearer = req.headers['authorization'] 
 
-export const isAuthenticated: RequestHandler = ( req, res, next ) => {
-
-	if( !req.user ) {
+	if( !bearer ) {
 
 		return res.status( 401 ).json({
-			msg: 'No autorizado!'
+			msg: 'No Autorizado!'
 		})
 	}
-	next()
+
+	const token = bearer.split(' ')[1]
+
+	try {
+		
+		jwt.verify( token, process.env.JWT_SEED! )
+		next()
+	} catch ( error ) {
+		
+		return res.status( 401 ).json({
+			msg: 'No Autorizado!'
+		})
+	}
 }
 export const isAuthenticatedAndAdmin: RequestHandler = ( req, res, next ) => {
 
-	const user = req.user as IUser | undefined
-
-	if( !user || user.role !== 'admin' ) {
-
-		return res.status( 401 ).json({
-			msg: 'No autorizado!'
-		})
-	}
 	next()
 }

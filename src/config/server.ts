@@ -5,7 +5,7 @@ import { Server as IOServer } from 'socket.io'
 /*  */
 import RoutesApp from '../routes'
 import Database from './db'
-import { sessionMiddleware, passport } from '../middlewares'
+import {  } from '../middlewares'
 import Sockets from './sockets'
 
 
@@ -13,7 +13,7 @@ class Server {
 
 	public app: Express = express()
 	private server = createServer( this.app )
-	private io: IOServer = new IOServer( this.server, { cors: { origin: '*' } } )
+	private io: IOServer = new IOServer( this.server, { } )
 	private db = new Database()
 	private routesApp = new RoutesApp()
 
@@ -31,9 +31,6 @@ class Server {
 		/* habilitar el body */
 		this.app.use( express.urlencoded({ extended: true }) )
 		this.app.use( express.json() )
-		this.app.use( sessionMiddleware )
-		this.app.use( passport.initialize() )
-		this.app.use( passport.session() )
 
 		this.initRoutes()
 		this.initServer()
@@ -41,8 +38,20 @@ class Server {
 	
 	private initCors = () => {
 
+		let whiteList: string[] = []
+		
+		if( process.env.NODE_ENV === 'production' ) {
+
+			whiteList = [
+				''	
+			]
+		} else whiteList = ['http://localhost:3000', 'http://localhost:4000']
 		this.app.use( cors({
-			origin: '*',
+			origin: ( origin, cb ) => {
+
+				if( origin && whiteList.some( domain => domain === origin ) || !origin ) cb( null, true )
+				else cb( new Error('Not allowed by cors') )
+			},
 			credentials: true
 		}))
 	}

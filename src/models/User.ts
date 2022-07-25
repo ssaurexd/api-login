@@ -7,12 +7,14 @@ import { IUser, IUserMethods, UserModel } from '../interfaces'
 const userSchema = new Schema<IUser, UserModel, IUserMethods>({
 	name: {
 		type: String,
-		required: true
+		required: true,
+		index: 'text'
 	},
 	email: {
 		type: String,
 		required: true,
-		unique: true
+		unique: true,
+		index: 'text'
 	},
 	password: {
 		type: String,
@@ -45,6 +47,9 @@ userSchema.pre( 'save', async function( next ) {
 userSchema.set( 'toJSON', {
 	transform(doc, ret, options) {
 		delete ret['password']
+		delete ret['updatedAt']
+		delete ret['__v']
+		delete ret['createdAt']
         return ret
 	},
 })
@@ -62,6 +67,4 @@ userSchema.method( 'comparePassword', async function( password: string ) {
 	return isPasswordEqual
 })
 
-const User = model<IUser, UserModel>( 'User', userSchema )
-
-export default User
+export const User = model<IUser, UserModel>( 'User', userSchema )

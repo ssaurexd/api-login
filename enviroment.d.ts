@@ -7,7 +7,6 @@ declare global {
 			MONGO_URL: string;
 			BASE_PATH: string;
 			JWT_SEED: string;
-			SESSION_SECRET: string;
 			NODE_ENV: 'development' | 'production'
 		}
 	}
