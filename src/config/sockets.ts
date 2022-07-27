@@ -1,7 +1,7 @@
 import { Server }  from 'socket.io'
 /*  */
 import { checkJWT } from '../helpers'
-import { setUserOFF, setUserOn } from '../controllers'
+import { socketController } from '../controllers'
 
 
 
@@ -23,13 +23,15 @@ class Sockets {
                 console.log('socket no identificado');
                 return socket.disconnect();
             }
-
-            await setUserOn( uid )
+            await socketController.setUserOn( uid )
             socket.join( uid );
+
+            this.io.emit( 'get-users', await socketController.getUsers() )
             
             socket.on( 'disconnect', async() => {
-
-                await setUserOFF( uid )
+                
+                await socketController.setUserOFF( uid )
+                this.io.emit( 'get-users', await socketController.getUsers() )
             })
         });
     }
