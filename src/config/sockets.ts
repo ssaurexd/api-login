@@ -2,6 +2,7 @@ import { Server }  from 'socket.io'
 /*  */
 import { checkJWT } from '../helpers'
 import { socketController } from '../controllers'
+import { IMessage } from '../interfaces'
 
 
 
@@ -26,6 +27,14 @@ class Sockets {
             await socketController.setUserOn( uid )
             socket.join( uid );
 
+            /* Cuando el cliente envia un msg */
+            socket.on( 'send-personal-msg', async ( msg: IMessage ) => {
+                
+                const newMsg = await socketController.saveMsg( msg )
+                this.io.to( msg.to.toString() ).emit( 'send-personal-msg', newMsg )
+                this.io.to( msg.from.toString() ).emit( 'send-personal-msg', newMsg )
+            })
+            
             this.io.emit( 'get-users', await socketController.getUsers() )
             
             socket.on( 'disconnect', async() => {

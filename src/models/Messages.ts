@@ -19,6 +19,8 @@ const messageSchema = new Schema<IMessage>({
 		type: String,
 		required: true
 	}
+}, {
+	timestamps: true
 })
 
 messageSchema.method( 'toJSON', function() {

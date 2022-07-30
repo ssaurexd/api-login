@@ -1,4 +1,5 @@
-import { User } from '../models'
+import { IMessage } from '../interfaces'
+import { Message, User } from '../models'
 
 
 export const setUserOn = async ( uid: string ) => {
@@ -33,6 +34,20 @@ export const getUsers = async () => {
 	} catch ( error ) {
 		
         console.log("🚀 ~ file: socket.controllers.ts ~ line 31 ~ getUsers ~ error", error)
+		return []
+	}
+}
+
+export const saveMsg = async ( msg: IMessage ) => {
+
+	try {
+		
+		const msgCreated = await Message.create( msg )
+
+		return msgCreated
+	} catch ( error ) {
+		
+        console.log("🚀 ~ file: socket.controllers.ts ~ line 49 ~ saveMsg ~ error", error)
 		return []
 	}
 }
