@@ -6,4 +6,4 @@ import { messageController } from '../controllers'
 
 export const router = Router()
 
-router.get( '/:from', isAuthenticated, messageController.getMessagesByUser )
+router.get( '/from/:uid', isAuthenticated, messageController.getMessagesByUser )

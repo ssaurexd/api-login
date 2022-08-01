@@ -13,3 +13,9 @@ export const checkJWT = ( token: string ) => {
         return [ false, null ]
     }
 }
+
+export const getUserId = ( token: string ): string => {
+
+    const { uid } = jwt.verify( token, `${process.env.JWT_SEED}` ) as { uid: string }
+    return uid
+}

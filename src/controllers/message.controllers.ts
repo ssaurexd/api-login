@@ -1,22 +1,23 @@
 import { RequestHandler } from 'express'
-import { checkJWT } from '../helpers'
 /*  */
+import { getUserId } from '../helpers'
 import { Message } from '../models'
 
 
 export const getMessagesByUser: RequestHandler = async ( req, res ) => {
 
-	const { from = '' } = req.params
+	const { uid: from = '' } = req.params
 
 	try {
-		
-		const [ _, uid ] = checkJWT( req.headers['authorization']! )
+		const bearer = req.headers['authorization'] as string
+		const token = bearer.split(' ')[1]
+		const uid = getUserId( token )
 		const messages = await Message.find({
 			$or: [
 				{ from, to: uid },
 				{ from: uid, to: from },
 			]
-		}).sort({ createdAt: -1 }).limit( 30 )
+		}).sort({ createdAt: 1 }).limit( 30 )
 
 		return res.status( 200 ).json({
 			messages
