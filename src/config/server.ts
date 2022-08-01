@@ -43,7 +43,7 @@ class Server {
 		if( process.env.NODE_ENV === 'production' ) {
 
 			whiteList = [
-				'http://localhost:3000'	
+				'https://ssaurexd-chat-client.herokuapp.com'
 			]
 		} else whiteList = ['http://localhost:3000', 'http://localhost:4000']
 		this.app.use( cors({
