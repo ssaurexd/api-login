@@ -17,7 +17,7 @@ export const getMessagesByUser: RequestHandler = async ( req, res ) => {
 				{ from, to: uid },
 				{ from: uid, to: from },
 			]
-		}).sort({ createdAt: 1 }).limit( 30 )
+		}).sort({ createdAt: -1 }).limit( 30 )
 
 		return res.status( 200 ).json({
 			messages

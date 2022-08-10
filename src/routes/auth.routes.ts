@@ -30,3 +30,14 @@ router.post( '/login',
 	]),
 	authController.login
 )
+
+router.post( '/oauth/google',
+	validateBody([
+		body('email')
+			.notEmpty({ ignore_whitespace: true }).withMessage('El email es requerido')
+			.isEmail().withMessage('Email no valido'),
+		body('name')
+		.notEmpty({ ignore_whitespace: true }).withMessage('El name es requerido'),
+	]),
+	authController.oAuthToDB
+)

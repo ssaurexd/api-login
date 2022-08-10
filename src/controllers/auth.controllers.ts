@@ -61,3 +61,52 @@ export const login: RequestHandler = async ( req, res ) => {
 		})
 	}
 }
+
+
+/* --START-- OAuth
+-------------------------------------------------------- */
+export const oAuthToDB: RequestHandler = async ( req, res ) => {
+	
+	const { email = '', name = '' } = req.body
+
+	try {
+		
+		const user = await User.findOne({ email })
+
+		if( user ) {
+
+			const token = jwt.sign({ uid: user._id }, process.env.JWT_SEED!, { expiresIn: '30d' } )
+
+			return res.status( 200 ).json({
+				_id: user._id,
+				email: user.email,
+				role: user.role,
+				name: user.name,
+				token
+			})
+		}
+
+		const newUser = await User.create({
+			email,
+			name, 
+			password: '@'
+		})
+		const token = jwt.sign({ uid: newUser._id }, process.env.JWT_SEED!, { expiresIn: '30d' } )
+
+		return res.status( 200 ).json({
+			_id: newUser._id,
+			email: newUser.email,
+			role: newUser.role,
+			name: newUser.name,
+			token
+		})
+	} catch ( error ) {
+		
+        console.log("🚀 ~ file: auth.controllers.ts ~ line 75 ~ constoauthToDB:RequestHandler= ~ error", error)
+		return res.status( 500 ).json({
+			msg: 'Oops! Algo salio mal!'
+		})
+	}
+}
+/* --END-- OAuth
+-------------------------------------------------------- */
