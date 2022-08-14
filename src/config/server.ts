@@ -3,9 +3,8 @@ import { createServer } from 'http'
 import cors from 'cors'
 import { Server as IOServer } from 'socket.io'
 /*  */
-import RoutesApp from '../routes'
+import RoutesApp, { docRouter } from '../routes'
 import Database from './db'
-import {  } from '../middlewares'
 import Sockets from './sockets'
 
 
@@ -58,6 +57,7 @@ class Server {
 
 	private initRoutes = () => {
 
+		this.app.use( '', docRouter )
 		this.app.use( '/api', this.routesApp.getRouter() )
 	}
 

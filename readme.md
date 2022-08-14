@@ -11,6 +11,7 @@ PORT =
 MONGO_URL =
 BASE_PATH = 
 JWT_SEED =
+NODE_PATH = 
 ```
 
 ## Server scripts
