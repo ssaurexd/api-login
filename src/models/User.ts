@@ -56,7 +56,7 @@ userSchema.set( 'toJSON', {
 /* Acatualizar el campo updatedAt cuando se haga update */
 userSchema.pre( 'updateOne', async function( next ) {
 
-	this.updatedAt = new Date()
+	this.set({ updatedAt: new Date() })
 	next()
 })
 /* Verificar si la contraseña es correcta */
